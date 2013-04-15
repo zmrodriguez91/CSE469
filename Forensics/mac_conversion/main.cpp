@@ -1,10 +1,11 @@
 #include <cstdlib>
 #include <iostream>
+#include <fstream>
 #include <string>
 using namespace std;
 
 void usage(){
-	cout << "This is how you do it!";
+	cout << "Usage:\n\tmac_conversion -T|-D [-f filename | -h hex_value]" << endl;
 	exit(EXIT_FAILURE);
 	return;
 }
@@ -66,15 +67,18 @@ int main (int argc, char** argv){
 	int data = 0x00000000;
 	if (filename_string != "")
 	{
-
+		fstream input_file;
+		input_file.open(filename_string, ios_base::in);
+		char temp[7];
+		input_file.getline(temp, 7);
+		data = parseHex(temp);
+		input_file.close();
 	}
 	else if (hex_string != "")
 	{
-		data = parseHex(hex_string);
-		data = ((data & 0xFF00FF00) >> 8)|((data & 0x00FF00FF) << 8);
+		data = parseHex(hex_string);		
 	}
-	cout << hex << data << dec << endl;
-
+	data = ((data & 0xFF00FF00) >> 8)|((data & 0x00FF00FF) << 8);
 	switch (operation){
 		case Time:
 			int Hour, Minute, Second;
@@ -132,7 +136,7 @@ int main (int argc, char** argv){
 					exit(EXIT_FAILURE);
 					break;
 			}
-			cout << " " << Day << ", " << Year << endl;
+			cout << " " << Day << ", " << 1980 + Year << endl;
 			break;
 		default:
 			usage();
