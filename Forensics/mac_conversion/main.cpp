@@ -82,7 +82,7 @@ int main (int argc, char** argv){
 			Minute = (data & 0x000007F0) >> 5;
 			Second = (data & 0x0000001F) >> 0;
 			cout << "Time: " << Hour << ":" << Minute << ":" << Second << " ";
-			cout << ((Hour > 12)? "PM" : "AM") << endl;
+			cout << ((Hour > 11)? "PM" : "AM") << endl;
 			break;
 		case Date:
 			int Year, Month, Day;
