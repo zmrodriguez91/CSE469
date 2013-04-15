@@ -49,18 +49,20 @@ int main (int argc, char** argv){
 			if (operation == Invalid) operation = Time;
 			else usage();
 		}
-		if (arg == "-D")
+		else if (arg == "-D")
 		{
 			if (operation == Invalid) operation = Date;
 			else usage();			
 		}
-		if (arg == "-f")
+		else if (arg == "-f")
 		{
 			filename_string = argv[i + 1];
+			i++;
 		}
-		if (arg == "-h")
+		else if (arg == "-h")
 		{
 			hex_string = argv[i + 1];
+			i++;
 		}		
 	}
 
