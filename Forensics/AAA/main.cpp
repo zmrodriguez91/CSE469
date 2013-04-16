@@ -94,12 +94,6 @@ int MBR_ENTRY::end_sector()
 }
 unsigned int MBR_ENTRY::mbr_offset()
 {
-	/*unsigned int temp = 0x00000000;
-	temp = temp | ((0x000000FF & (unsigned int)  bytes[8]) << 0);
-	temp = temp | ((0x000000FF & (unsigned int)  bytes[9]) << 8);
-	temp = temp | ((0x000000FF & (unsigned int) bytes[10]) << 16);
-	temp = temp | ((0x000000FF & (unsigned int) bytes[11]) << 24);
-	return temp;*/
 	unsigned int temp = 0x00000000;
 	temp = (temp | (((unsigned int) bytes[8]) << 0)) & 0x000000FF;
 	temp = (temp | (((unsigned int) bytes[9]) << 8)) & 0x0000FFFF;
@@ -318,11 +312,15 @@ int main(int argc, char** argv)
 				//cout << hex << (0x000000FF & ((unsigned int) vbr.bytes[j])) << dec << " ";
 			}
 			
-			cout << endl << vbr.OEM_name() << endl;
 			cout << "Partition " << i << " ("<< MBR_CONTENTS[i].type() << "):" << endl;
-			cout << "\tReserved Area: " << " Size: " << vbr.reserved_sectors() << " sectors" << endl;
+			cout << "\tReserved Area:" << endl;
+			cout << "\t\tStart Sector:\t0" << endl;
+			cout << "\t\tEnding Sector:\t" << (vbr.reserved_sectors() - 1) << endl;
+			cout << "\t\tSize:\t" << vbr.reserved_sectors() << " sectors" << endl;
 			cout << "\tSectors per cluster: " << vbr.cluster_size() << " sectors" << endl;
-			cout << "\tFat area: !" << endl;
+			cout << "\tFat area:" << endl;
+			cout << "\t\tStart Sector:\t" << vbr.reserved_sectors() << endl;
+			cout << "\t\tEnding Sector:\t" <<(vbr.reserved_sectors() -1 + vbr.fat_count()*((vbr.FAT_size_sectors() == 0)? vbr.FAT_size_sectors32() : vbr.FAT_size_sectors()) )<< endl;
 			cout << "\t# of FATs: " << vbr.fat_count() << endl;
 			cout << "\tThe size of each FAT: " << ((vbr.FAT_size_sectors() == 0)? vbr.FAT_size_sectors32() : vbr.FAT_size_sectors()) << " sectors" << endl;			
 		}
