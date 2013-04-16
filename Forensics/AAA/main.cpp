@@ -10,9 +10,9 @@ map<char, string> part_type;
 void initMap()
 {
 	part_type[0x01] = "DOS 12-bit FAT";
-	part_type[0x04] = "DOS 16-bit FAT (<32MB)";
+	part_type[0x04] = "DOS 16-bit FAT ( < 32MB )";
 	part_type[0x05] = "Extended Partition";
-	part_type[0x06] = "DOS 16-bit FAT (>32MB)";
+	part_type[0x06] = "DOS 16-bit FAT ( > 32MB )";
 	part_type[0x07] = "NTFS";
 	part_type[0x08] = "AIX bootable partition";
 	part_type[0x09] = "AIX data partition";
@@ -94,11 +94,17 @@ int MBR_ENTRY::end_sector()
 }
 unsigned int MBR_ENTRY::mbr_offset()
 {
-	unsigned int temp = 0x00000000;
+	/*unsigned int temp = 0x00000000;
 	temp = temp | ((0x000000FF & (unsigned int)  bytes[8]) << 0);
 	temp = temp | ((0x000000FF & (unsigned int)  bytes[9]) << 8);
 	temp = temp | ((0x000000FF & (unsigned int) bytes[10]) << 16);
 	temp = temp | ((0x000000FF & (unsigned int) bytes[11]) << 24);
+	return temp;*/
+	unsigned int temp = 0x00000000;
+	temp = (temp | (((unsigned int) bytes[8]) << 0)) & 0x000000FF;
+	temp = (temp | (((unsigned int) bytes[9]) << 8)) & 0x0000FFFF;
+	temp = (temp | (((unsigned int) bytes[10]) << 16)) & 0x00FFFFFF;
+	temp = (temp | (((unsigned int) bytes[11]) << 24)) & 0xFFFFFFFF;
 	return temp;
 }
 unsigned int MBR_ENTRY::size()
@@ -111,6 +117,128 @@ unsigned int MBR_ENTRY::size()
 	return temp;
 }
 
+//VBR Entry
+struct VBR
+{
+	char bytes[40];
+	string OEM_name();
+	unsigned int sector_size();
+	unsigned int cluster_size();
+	unsigned int reserved_sectors();
+	unsigned int fat_count();
+	unsigned int max_files();
+	unsigned int fs_size_sectors16();
+	unsigned int media_type();
+	unsigned int FAT_size_sectors();
+	unsigned int sectors_per_track();
+	unsigned int head_count();
+	unsigned int offset_sectors();
+	unsigned int fs_size_sectors32();
+	unsigned int FAT_size_sectors32();
+};
+string VBR::OEM_name(){
+	string temp = "";
+	for (int i = 3; i < 11; i++)
+	{
+		temp = temp + bytes[i];
+	}
+	return temp;
+}
+unsigned int VBR::sector_size()
+{
+	unsigned int temp = 0x00000000;
+	temp = (temp | (((unsigned int) bytes[11]) << 0)) & 0x000000FF;
+	temp = (temp | (((unsigned int) bytes[11]) << 8)) & 0x0000FFFF;
+	return temp;
+}
+unsigned int VBR::cluster_size()
+{
+	unsigned int temp = 0x00000000;
+	temp = (temp | (((unsigned int) bytes[13]) << 0)) & 0x000000FF;
+	temp = temp & 0x000000FF;
+	return temp;
+}
+unsigned int VBR::reserved_sectors()
+{
+	unsigned int temp = 0x00000000;
+	temp = (temp | (((unsigned int) bytes[14]) << 0)) & 0x000000FF;
+	temp = (temp | (((unsigned int) bytes[15]) << 8)) & 0x0000FFFF;
+	return temp;
+}
+unsigned int VBR::fat_count()
+{
+	unsigned int temp = 0x00000000;
+	temp = (temp | (((unsigned int) bytes[16]) << 0)) & 0x000000FF;
+	return temp;
+}
+unsigned int VBR::max_files()
+{
+	unsigned int temp = 0x00000000;
+	temp = (temp | (((unsigned int) bytes[17]) << 0)) & 0x000000FF;
+	temp = (temp | (((unsigned int) bytes[18]) << 8)) & 0x0000FFFF;
+	return temp;
+}
+unsigned int VBR::fs_size_sectors16()
+{
+	unsigned int temp = 0x00000000;
+	temp = (temp | (((unsigned int) bytes[19]) << 0)) & 0x000000FF;
+	temp = (temp | (((unsigned int) bytes[20]) << 8)) & 0x0000FFFF;
+	return temp;
+}
+unsigned int VBR::media_type()
+{
+	unsigned int temp = 0x00000000;
+	temp = (temp | (((unsigned int) bytes[21]) << 0)) & 0x000000FF;
+	return temp;
+}
+unsigned int VBR::FAT_size_sectors()
+{
+	unsigned int temp = 0x00000000;
+	temp = (temp | (((unsigned int) bytes[22]) << 0)) & 0x000000FF;
+	temp = (temp | (((unsigned int) bytes[23]) << 8)) & 0x0000FFFF;
+	return temp;
+}
+unsigned int VBR::sectors_per_track()
+{
+	unsigned int temp = 0x00000000;
+	temp = (temp | (((unsigned int) bytes[24]) << 0)) & 0x000000FF;
+	temp = (temp | (((unsigned int) bytes[25]) << 8)) & 0x0000FFFF;
+	return temp;
+}
+unsigned int VBR::head_count()
+{
+	unsigned int temp = 0x00000000;
+	temp = (temp | (((unsigned int) bytes[26]) << 0)) & 0x000000FF;
+	temp = (temp | (((unsigned int) bytes[27]) << 8)) & 0x0000FFFF;
+	return temp;
+}
+unsigned int VBR::offset_sectors()
+{
+	unsigned int temp = 0x00000000;
+	temp = (temp | (((unsigned int) bytes[28]) << 0)) & 0x000000FF;
+	temp = (temp | (((unsigned int) bytes[29]) << 8)) & 0x0000FFFF;
+	temp = (temp | (((unsigned int) bytes[30]) << 16)) & 0x00FFFFFF;
+	temp = (temp | (((unsigned int) bytes[31]) << 24)) & 0xFFFFFFFF;
+	return temp;
+}
+unsigned int VBR::fs_size_sectors32()
+{
+	unsigned int temp = 0x00000000;
+	temp = (temp | (((unsigned int) bytes[32]) << 0)) & 0x000000FF;
+	temp = (temp | (((unsigned int) bytes[33]) << 8)) & 0x0000FFFF;
+	temp = (temp | (((unsigned int) bytes[34]) << 16)) & 0x00FFFFFF;
+	temp = (temp | (((unsigned int) bytes[35]) << 24)) & 0xFFFFFFFF;
+	return temp;
+}
+unsigned int VBR::FAT_size_sectors32()
+{
+	unsigned int temp = 0x00000000;
+	temp = (temp | (((unsigned int) bytes[36]) << 0)) & 0x000000FF;
+	temp = (temp | (((unsigned int) bytes[37]) << 8)) & 0x0000FFFF;
+	temp = (temp | (((unsigned int) bytes[38]) << 16)) & 0x00FFFFFF;
+	temp = (temp | (((unsigned int) bytes[39]) << 24)) & 0xFFFFFFFF;
+	return temp;
+}
 //Usage
 void usage()
 {
@@ -166,8 +294,38 @@ int main(int argc, char** argv)
 			MBR_CONTENTS[i].bytes[j] = input_file.get();
 		}
 		cout << dec;
+		cout << "\t(" << hex << (0x000000FF & (unsigned int) MBR_CONTENTS[i].bytes[4]) << dec << ") ";
 		cout << MBR_CONTENTS[i].type() <<",\t" << MBR_CONTENTS[i].mbr_offset() << ",\t" << MBR_CONTENTS[i].size();
 		cout << endl;
+	}
+
+	cout << endl << "VBR Analysis:" << endl;
+	for (int i = 0; i < 4; i++){
+		if (
+			MBR_CONTENTS[i].type() == part_type[0x01] ||
+			MBR_CONTENTS[i].type() == part_type[0x04] ||
+			MBR_CONTENTS[i].type() == part_type[0x06] ||
+			MBR_CONTENTS[i].type() == part_type[0x0B] ||
+			MBR_CONTENTS[i].type() == part_type[0x0C] ||
+			MBR_CONTENTS[i].type() == part_type[0x1B] ||
+			MBR_CONTENTS[i].type() == part_type[0x86])
+		{
+			input_file.seekg((MBR_CONTENTS[i].mbr_offset()) * 512);			
+			VBR vbr;
+			for (int j = 0; j < 40; j++) 
+			{
+				vbr.bytes[j] = input_file.get();
+				//cout << hex << (0x000000FF & ((unsigned int) vbr.bytes[j])) << dec << " ";
+			}
+			
+			cout << endl << vbr.OEM_name() << endl;
+			cout << "Partition " << i << " ("<< MBR_CONTENTS[i].type() << "):" << endl;
+			cout << "\tReserved Area: " << " Size: " << vbr.reserved_sectors() << " sectors" << endl;
+			cout << "\tSectors per cluster: " << vbr.cluster_size() << " sectors" << endl;
+			cout << "\tFat area: !" << endl;
+			cout << "\t# of FATs: " << vbr.fat_count() << endl;
+			cout << "\tThe size of each FAT: " << ((vbr.FAT_size_sectors() == 0)? vbr.FAT_size_sectors32() : vbr.FAT_size_sectors()) << " sectors" << endl;			
+		}
 	}
 	//Close file
 	input_file.close();
