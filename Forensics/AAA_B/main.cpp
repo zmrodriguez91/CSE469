@@ -13,6 +13,7 @@ string output_filename = "";
 fstream ifs;
 fstream ofs;
 ostream *os;
+
 int main(int argc, char** argv)
 {
 	os = &cout;
@@ -22,6 +23,10 @@ int main(int argc, char** argv)
 		if (arg == "-f"){
 			i++;			
 			input_filename = argv[i];
+			string command = "fciv " + input_filename + " -MD5 > " + input_filename + "-MD5.txt ";
+			system(command.c_str());
+			command = "fciv " + input_filename + " -SHA1 > " + input_filename + "-SHA1.txt ";
+			system(command.c_str());
 			ifs.open(input_filename, ios::in | ios::binary);
 		}
 		else if (arg == "-o"){

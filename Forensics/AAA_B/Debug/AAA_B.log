@@ -1,4 +1,4 @@
-﻿Build started 4/16/2013 10:44:56 AM.
+﻿Build started 4/24/2013 1:42:01 PM.
      1>Project "C:\Users\Zachary\Desktop\CSE469\Forensics\AAA_B\AAA_B.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\AAA_B.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -22,4 +22,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.23
+Time Elapsed 00:00:03.17
