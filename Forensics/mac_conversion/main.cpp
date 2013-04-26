@@ -39,8 +39,7 @@ string filename_string = "";
 string hex_string = "";
 Time_Date operation = Invalid;
 
-int main (int argc, char** argv){
-	cout << argc << "\n";
+int main (int argc, char** argv){	
 	for (int i = 1; i < argc; i++)
 	{
 		string arg = argv[i];
