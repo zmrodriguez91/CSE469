@@ -123,7 +123,14 @@ int main(int argc, char** argv)
 }
 void usage()
 {
-	(*os) << "This is how you use it!" << endl;
+	//(*os) << "This is how you use it!" << endl;
+	cout << "Usage:" << endl;
+	cout << "\tAAA -f input_file [-o output_file]" << endl;
+	cout << "\t-o\tIf specified, this forwards the output of the" << endl;
+	cout << "\t\tMBR/VBR analysis to the specified output file." << endl;
+	cout << "\n\t\tMD5 and SHA1 outputs will be stored in textfiles" << endl;
+	cout << "\t\twith names of the form input_file-MD5.txt|SHA1.txt" << endl;
+
 	if (ifs.is_open())ifs.close();
 	if (ofs.is_open())ofs.close();
 	exit(EXIT_FAILURE);
